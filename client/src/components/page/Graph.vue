@@ -1,6 +1,5 @@
 <template>
   <div>
-
     <!--    卡片视图区-->
     <el-card class="box-card">
       <!--    面包屑导航区域-->

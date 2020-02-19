@@ -5,6 +5,7 @@ import Home from "./components/Home.vue"
 import Welcome from "./components/Welcome.vue"
 import Auto from "./components/page/Auto.vue"
 import Graph from "./components/page/Graph.vue"
+import PathsGraph from "./components/page/PathsGraph.vue";
 
 
 Vue.use(Router)
@@ -18,7 +19,8 @@ const router =  new Router({
       children:[
         {path:'/welcome',component:Welcome},
         {path:'/auto',component:Auto},
-        {path:'/graph',component:Graph}
+        {path:'/graph',component:Graph},
+        {path:'/pathsGraph',component:PathsGraph}
       ]},
   ]
 })

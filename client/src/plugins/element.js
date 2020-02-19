@@ -19,7 +19,9 @@ import {
   Row,
   Col,
   Upload,
-  Image
+  Image,
+  Scrollbar,
+  Divider
 } from "element-ui"
 
 Vue.use(Button);
@@ -40,6 +42,8 @@ Vue.use(Row);
 Vue.use(Col);
 Vue.use(Upload);
 Vue.use(Image);
+Vue.use(Scrollbar);
+Vue.use(Divider);
 
 
 Vue.prototype.$message = Message
