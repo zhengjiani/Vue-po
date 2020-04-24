@@ -35,7 +35,7 @@
       return {
         //登录表单的数据对象
         loginForm: {
-          username: 'admin',
+          username: 'admin1',
           password: '123456'
         },
         //表单验证规则对象
@@ -58,7 +58,7 @@
         this.$refs.loginFormRef.validate(async valid => {
           if (!valid) return;
           const {data: res} = await this.$http.post("login", this.loginForm);
-          if (res.meta.status !== 200) return this.$message.error("登录失败");
+          if (res.code !== 0) return this.$message.error("登录失败");
           this.$message.success("登录成功");
           //1.将登录成功之后的token,保存到客户端的sessionStorage中
           //1.1项目中除了登录之外的其他API接口，必须在登录之后才可以访问

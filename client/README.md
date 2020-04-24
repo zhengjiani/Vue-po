@@ -25,5 +25,14 @@ npm run test
 npm run lint
 ```
 
+### 生成打包报告
+```$xslt
+vue-cli-service build --report
+```
+
+###可视化查看
+```$xslt
+vue ui
+```
 ### Customize configuration
 See [Configuration Reference](https://cli.vuejs.org/config/).
