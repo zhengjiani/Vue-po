@@ -13,22 +13,22 @@
           <h3>HTML文档</h3>
           <el-upload
               class="upload-demo"
-              action="http://localhost:5000/upload"
+              action="http://localhost:5000/api/v1/upload"
               :on-change="handleImport"
               :on-preview="handlePreview"
               :limit="1"
-              :file-list="fileList">
+              >
             <el-button size="small" type="primary">点击上传</el-button>
             <div slot="tip" class="el-upload__tip">只能上传html文件</div>
           </el-upload>
           <pre v-highlight>
-            <code class="language-html">{{fileContent}}</code>
+            {{fileContent}}
           </pre>
         </el-col>
         <el-col :span="12">
           <el-button size="small" type="primary" @click="downloadFile">页面对象生成</el-button>
-          <pre>
-            <code class="language-python">{{pofile}}</code></pre>
+          <pre v-highlight>
+            {{pofile}}</pre>
         </el-col>
       </el-row>
     </el-card>
@@ -65,7 +65,7 @@
       },
       async downloadFile() {
         const {data:res} = await this.$http.get('/download/MySite.py')
-        this.pofile = res
+        this.pofile = res.data
         console.log(res)
       }
 
@@ -74,7 +74,4 @@
 </script>
 
 <style lang="less" scoped>
-.box-card {
-    height: 880px;
-  }
 </style>

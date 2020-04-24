@@ -18,10 +18,18 @@ import {
   Card,
   Row,
   Col,
+  Table,
+  TableColumn,
   Upload,
   Image,
   Scrollbar,
-  Divider
+  Divider,
+  Pagination,
+  Tooltip,
+  Dialog,
+  MessageBox,
+  Cascader,
+  Select,
 } from "element-ui"
 
 Vue.use(Button);
@@ -44,6 +52,12 @@ Vue.use(Upload);
 Vue.use(Image);
 Vue.use(Scrollbar);
 Vue.use(Divider);
-
-
+Vue.use(TableColumn);
+Vue.use(Table);
+Vue.use(Pagination);
+Vue.use(Tooltip);
+Vue.use(Dialog);
+Vue.use(Cascader);
+Vue.use(Select)
 Vue.prototype.$message = Message
+Vue.prototype.$confirm = MessageBox.confirm
