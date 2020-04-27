@@ -7,49 +7,48 @@
       <el-breadcrumb-item>Web测试用例生成</el-breadcrumb-item>
       <el-breadcrumb-item>测试路径提取</el-breadcrumb-item>
     </el-breadcrumb>
-    <el-row :gutter="10">
-      <el-col :span="8">
-        <div class="grid-content bg-purple">
-          <el-button type="primary" plain @click="getPOG">构建POG</el-button>
-          <el-divider></el-divider>
-          <el-image :src="require('/Users/zhengjiani/PycharmProjects/PageOs_v0.1/graph.png')" fit="fill" :lazy="true">{{src}}</el-image>
-        </div>
-      </el-col>
-      <el-col :span="8">
-        <div class="grid-content bg-purple">
-          <el-button type="primary" plain>构建POT</el-button>
-          <el-divider></el-divider>
-          <el-image :src="require('/Users/zhengjiani/PycharmProjects/PageOs_v0.1/tree.png')" fit="fill" :lazy="true">{{src}}</el-image>
-        </div>
-      </el-col>
-      <el-col :span="8">
-        <div class="grid-content bg-purple">
-          <el-button type="primary" plain>生成测试路径集</el-button>
-          <el-divider></el-divider>
-          <el-table :data="pathlist" border stripe>
-            <el-table-column type="index"></el-table-column>
-            <el-table-column label="路径集列表" prop="pathname" width="430px">
-            </el-table-column>
-            <el-table-column label="操作">
-              <template>
-                <!--编辑按钮-->
-                <el-button type="primary" icon="el-icon-edit" size="mini"></el-button>
-              </template>
-            </el-table-column>
-          </el-table>
-          <!--分页区域-->
-          <el-pagination
-              @size-change="handleSizeChange"
-              @current-change="handleCurrentChange"
-              :current-page="queryInfo.pagenum"
-              :page-sizes="[1,2,5,10]"
-              :page-size="queryInfo.pagesize"
-              layout="total, sizes, prev, pager, next, jumper"
-              :total="total">
-          </el-pagination>
-        </div>
-      </el-col>
-    </el-row>
+    <el-dropdown @command="handleCommand">
+            <span class="el-dropdown-link">
+              选择页面对象文件<i class="el-icon-arrow-down el-icon--right"></i>
+            </span>
+      <el-dropdown-menu slot="dropdown">
+        <el-dropdown-item command="PetClinic_page">PetClinic</el-dropdown-item>
+        <el-dropdown-item command="pageKit_page">pageKit</el-dropdown-item>
+        <el-dropdown-item command="phoenix_page">phoenix</el-dropdown-item>
+      </el-dropdown-menu>
+    </el-dropdown>
+    <el-table
+        :data="pagepaths"
+        height="500"
+        border
+        style="width: 100%">
+      <el-table-column
+          label="方法序列"
+          width="180">
+        <ul>
+          <li v-for="item in methods" :key="item">
+            {{item}}
+          </li>
+        </ul>
+      </el-table-column>
+      <el-table-column
+          prop="pathlists"
+          label="路径序列">
+        <ul>
+          <li v-for="item in pathlists" :key="item">
+            {{item}}
+          </li>
+        </ul>
+      </el-table-column>
+      <el-table-column
+          prop="tree_dic"
+          label="迁移树字典">
+      </el-table-column>
+      <el-table-column
+          prop="tree_visual"
+          label="迁移树可视化文件路径">
+      </el-table-column>
+    </el-table>
   </el-card>
 </template>
 
@@ -57,51 +56,26 @@
   export default {
     data() {
       return {
-        src : '',
-        //获取路径列表的参数对象
-        queryInfo: {
-          query: '',
-          //当前页数
-          pagenum: 0,
-          //当前每页显示多少条数据
-          pagesize: 0,
-        },
-        pathlist: [],
-        total : 0,
+        pagepaths:[],
+        methods:[],
+        pathlists:[],
+        option: ''
       }
     },
     created() {
       this.getPathList()
     },
     methods: {
-      async getPOG() {
-        const {data:res} = await this.$http.get("pog_after")
-        this.src = res
-      },
-      async getPathList() {
-        const {data:res} = await this.$http.get('pathlists',{
-          params:this.queryInfo
-        })
-        // console.log(res)
-        if(res.meta.status !== 200) {
-          return this.$message.error('获取路径列表失败！')
-        }
-        this.pathlist = res.data.paths
-        this.total = res.data.total
-      },
-      //坚听pagesize改变的事件
-      handleSizeChange(newSize) {
-        console.log(newSize)
-        this.queryInfo.pagesize=newSize
-        this.getPathList()
-      },
-      //监听页码值改变的事件
-      handleCurrentChange(newPage) {
-        console.log(newPage)
-        this.queryInfo.pagenum = newPage
-        this.getPathList()
+      async handleCommand(command) {
+        this.option = command
+        console.log(this.option)
+        const {data: res} = await this.$http.post("transtree", {"pagename": this.option})
+        if (res.code !== 0) return this.$message.error('获取路径列表失败')
+        this.pagepaths = res.data.paths
+        this.methods = res.data.paths[0].methods
+        this.pathlists = res.data.paths[0].pathlists
+        console.log(res)
       }
-
     }
   }
 </script>
