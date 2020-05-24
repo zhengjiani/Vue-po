@@ -7,179 +7,213 @@
       <el-breadcrumb-item>Web测试用例生成</el-breadcrumb-item>
       <el-breadcrumb-item>测试用例生成</el-breadcrumb-item>
     </el-breadcrumb>
-    <div class="block">
-      <span class="demonstration">选取测试路径</span>
-      <el-cascader
-          :options="page_options"
-      >
-      </el-cascader>
-    </div>
     <el-row :gutter="20">
-      <el-col :span="14">
-        <el-form :inline="true" class="demo-form-inline">
-          <el-form-item label="参数名">
-            <el-input v-model="input" placeholder="参数名"></el-input>
-          </el-form-item>
-          <el-form-item label="参数类型">
-            <el-cascader
-                :options="options"
-            >
-            </el-cascader>
-          </el-form-item>
-          <el-form-item>
-            <el-button type="primary">添加参数列表</el-button>
-          </el-form-item>
-          <el-form-item>
-            <el-button type="primary" @click="makeData">构造MOCK数据</el-button>
-          </el-form-item>
-        </el-form>
-        {{fileContent}}
-      </el-col>
-      <el-col :span="10">
-        <div class="testfiles">
-          <el-button type="primary">生成测试用例文件</el-button>
-          <el-button type="primary" @click='handleExport'>测试用例预览</el-button>
+      <el-col :span="12"><div class="grid-content bg-purple">
+        <!--步骤条-->
+        <el-steps :active="1" finish-status="success" simple style="margin-top: 20px">
+          <el-step title="选择测试路径" ></el-step>
+          <el-step title="构造Mock数据" ></el-step>
+          <el-step title="生成测试用例" ></el-step>
+        </el-steps>
+        <div class="transfer_box">
+          <el-transfer
+              :titles="['选择测试路径', '已选中测试路径']"
+              :data="data"
+              @change="handleChange"
+              v-model="value1">
+          </el-transfer>
         </div>
-        <a href="http://localhost:5000/testfile/test_pet.py" download="">test_pet.py</a>
-        <pre v-highlight>
-          <code class="language-python">{{testfile}}</code>
-        </pre>
+        <!--选中的路径列表-->
+        <h3>您选择要生成测试用例的测试路径为</h3>
+        <div class="lists" v-for="item in data" :key="item">
+          <li v-if="item['key'] in value1">
+            {{item['key']+item["label"]}}
+          </li>
+        </div>
+
+        <!--功能按钮区-->
+        <div class="func_btn">
+          <el-button type="primary" @click="dialogTableVisible = true">构建Mock数据</el-button>
+          <el-button type="primary">生成测试用例</el-button>
+        </div>
+        <!--构建Mock数据的dialog-->
+        <el-dialog title="根据您选择的测试路径生成的Mock数据" :visible.sync="dialogTableVisible">
+          <el-table :data="gridData">
+            <el-table-column property="path" label="路径编号" width="100px"></el-table-column>
+            <el-table-column property="mock" label="参数列表"></el-table-column>
+            <el-table-column property="modify" label="Mock数据" width="100px"></el-table-column>
+          </el-table>
+        </el-dialog>
+      </div>
       </el-col>
+      <el-col :span="12"><div class="grid-content bg-purple">
+        <el-steps :active="1" finish-status="success" simple style="margin-top: 20px">
+          <el-step title="选择测试应用" ></el-step>
+          <el-step title="选择测试用例" ></el-step>
+          <el-step title="生成测试套件" ></el-step>
+        </el-steps>
+      </div></el-col>
     </el-row>
+
   </el-card>
 </template>
 
 <script>
   export default {
     data() {
+      const generateData = _ => {
+        const data = [];
+        const pathlists = [
+          [
+            "FindPage",
+            "DetailPage",
+            "AddNewPetPage"
+          ],
+          [
+            "FindPage",
+            "DetailPage",
+            "EditOwnerPage"
+          ],
+          [
+            "FindPage",
+            "DetailPage",
+            "PetPage"
+          ],
+          [
+            "FindPage",
+            "DetailPage",
+            "PetPage"
+          ],
+          [
+            "FindPage",
+            "DetailPage",
+            "AddNewVisitPage",
+            "DetailPage",
+            "DetailPage",
+            "DetailPage",
+            "DetailPage"
+          ]
+        ];
+        for (let i = 0; i <= pathlists.length-1; i++) {
+          data.push({
+            key: i,
+            label: ` ${ pathlists[i] }`,
+          });
+        }
+        console.log(_);
+        return data;
+      };
       return {
-        page_options: [
-          {
-            value: 'PetClinic_page',
-            label: 'PetClinic_page',
-            children: [
-              {
-                value: 'path1',
-                label: '<\\HomePage:goto_search,FindPage:goto_detail_page,DetailPage>'
-              },
-              {
-                value: 'path2',
-                label: '<\\HomePage:goto_search,FindPage:goto_detail_page,DetailPage>'
-              },
-              {
-                value: 'path3',
-                label: '<\\HomePage:goto_search,FindPage:goto_detail_page,DetailPage:goto_edit_pet,PetPage:edit_pet(R1),DetailPage>'
-              },
-              {
-                value: 'path4',
-                label: '<\\HomePage:goto_search,FindPage:goto_detail_page,DetailPage:goto_visit,AddNewVisitPage:add_visit(R1),DetailPage>'
-              },
-              {
-                value: 'path5',
-                label: '<\\HomePage:goto_search,FindPage:goto_detail_page,DetailPage:goto_edit,EditOwnerPage:edit_info(R1),DetailPage>'
-              },
-              {
-                value: 'path6',
-                label: '<\\HomePage:goto_register,RegisterPage:regist_owner(R2),ErrorMsg>'
-              },
-              {
-                value: 'path7',
-                label: '<\\HomePage:goto_register,RegisterPage:regist_owner(R1),FindPage:goto_detail_page,DetailPage>'
-              },
-              {
-                value: 'path8',
-                label: '<\\HomePage:goto_Veter,VeterPage>'
-              }
-              ]
-          },
-          {
-            value: 'pageKit_page',
-            label: 'pageKit_page'
-          },
-          {
-            value: 'phoneix_page',
-            label: 'phoneix_page'
-          }
-
-        ],
-        options: [
-          {
-            value: 'person',
-            label: 'person',
-            children: [
-              {
-                value: 'name',
-                label: 'name'
-              },
-              {
-                value: 'last_name',
-                label: 'last_name'
-              },
-              {
-                value: 'first_name',
-                label: 'first_name'
-              }
-            ]
-          },
-          {
-            value: 'phone_number',
-            label: 'phone_number'
-          },
-          {
-            value: 'profile',
-            label: 'profile'
-          },
-          {
-            value: 'address',
-            label: 'address'
-          },
-          {
-            value: 'date_time',
-            label: 'date_time'
-          },
-          {
-            value: 'email',
-            label: 'email'
-          },
-          {
-            value: 'city',
-            label: 'city'
-          }
-        ],
-        input: '',
-        fileContent: '',
-        testfile: null
-      }
+        moved: [],
+        data: generateData(),
+        value1: [],
+        dialogTableVisible: false,
+        gridData: [],
+        ans:''
+      };
+    },
+    created() {
+      this.get_mockdata()
     },
     methods: {
-      async makeData() {
-        const {data:res} = await this.$http.get('/makedata')
-        this.fileContent = res.data
-        console.log(res)
+      handleChange(value, direction, movedKeys) {
+        console.log(value, direction, movedKeys);
+        const params = [
+          [
+            "firstname,lastname"
+          ],
+          [
+            "firstname,lastname"
+          ],
+          [
+            "firstname,lastname",
+            "pet_name"
+
+          ],
+          [
+            "firstname,lastname",
+            "pet_name"
+          ],
+          [
+            "firstname,lastname",
+            "pet_name",
+            "date",
+            "desc"
+          ]
+        ];
+
+        for (let i = 0; i <= movedKeys.length - 1; i++) {
+          const para = [];
+          para.push(params[movedKeys[i]]);
+          this.gridData.push({
+            path: movedKeys[i],
+            mock: ` ${params[movedKeys[i]]}`,
+            modify: this.ans
+          });
+          console.log(para)
+        }
+
       },
-      async handleExport() {
-        const {data:res} = await this.$http.get('/testfile/test_pet.py')
-        this.testfile = res
-        console.log(res)
+      async get_mockdata() {
+        const {data: res} = await this.$http.post('mockdata', {"params": ["firstname,lastname"]});
+        this.ans = JSON.stringify(res.data.ans)
       }
+
     }
-  }
+  };
 </script>
 
 <style lang="less" scoped>
- .demo-form-inline {
-  margin-top: 100px;
- }
- .block {
-   .el-cascader {
-     width: 900px;
-   }
- }
- .demonstration {
-   margin-right: 20px;
- }
- .testfiles {
-   margin-top: 100px;
- }
+  .el-row {
+    margin-bottom: 20px;
+
+    &:last-child {
+      margin-bottom: 0;
+
+    }
+  }
+
+  .el-col {
+
+    border-radius: 4px;
+  }
+
+  .bg-purple-dark {
+    background: #99a9bf;
+
+  }
+
+  .bg-purple {
+    background: #f2f2f2;
+    height: 700px;
+  }
+
+  .bg-purple-light {
+    background: #e5e9f2;
+  }
+
+  .grid-content {
+    border-radius: 4px;
+    min-height: 36px;
+  }
+
+  .row-bg {
+    padding: 10px 0;
+    background-color: #f9fafc;
+  }
+  .el-card {
+    height: 800px;
+  }
+  .el-steps {
+    margin-bottom: 20px;
+  }
+  .transfer_box {
+    display:flex;
+    justify-content:center;
+    align-items: center;
+  }
+
+
+
 
 </style>

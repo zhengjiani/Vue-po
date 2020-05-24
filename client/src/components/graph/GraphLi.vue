@@ -22,7 +22,13 @@
           <el-table-column type="index"></el-table-column>
           <el-table-column label="Web应用导航图列表" prop="poname">
           </el-table-column>
-          <el-table-column label="Web应用导航图文件地址" prop="graph_path">
+          <el-table-column label="Web应用导航图">
+            <div slot-scope="{row}" class="img-container">
+              <el-popover placement="right" title="" trigger="hover">
+                <img :src="row.graph_path" alt="" style="height: 100%;width:100%">
+                <img slot="reference" :src="row.graph_path" alt="" style="max-height: 50px;max-width:130px">
+              </el-popover>
+            </div>
           </el-table-column>
           <el-table-column label="操作">
             <template slot-scope="scope">

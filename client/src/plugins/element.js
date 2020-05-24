@@ -30,6 +30,8 @@ import {
   MessageBox,
   Cascader,
   Select,
+  Transfer,
+  Popover
 } from "element-ui"
 
 Vue.use(Button);
@@ -58,6 +60,8 @@ Vue.use(Pagination);
 Vue.use(Tooltip);
 Vue.use(Dialog);
 Vue.use(Cascader);
-Vue.use(Select)
+Vue.use(Select);
+Vue.use(Transfer)
+Vue.use(Popover);
 Vue.prototype.$message = Message
 Vue.prototype.$confirm = MessageBox.confirm
